@@ -18,6 +18,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Cache LaTeX aux files
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/.latex_aux
+          key: latexmk-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
+          restore-keys: |
+            latexmk-${{ runner.os }}-
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -39,7 +48,7 @@ jobs:
               
               cd "$basedir"
               latexmk -pdf -interaction=nonstopmode -file-line-error \
-                -aux-directory=/tmp/latex_aux \
+                -aux-directory=.latex_aux \
                 "$(basename $file)" || true
               
               if [ -f "${filename}.pdf" ]; then
@@ -259,9 +268,3 @@ jobs:
           git add Verbali/Interni/*.pdf Verbali/Esterni/*.pdf Candidatura/*.pdf RTB/*.pdf Glossario/*.pdf
           git diff --staged --quiet || git commit -m "Aggiorna PDFs compilati [skip ci]"
           git push
-      
-      - name: Pubblica su GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./output

@@ -56,6 +56,7 @@ jobs:
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+            dest_dir="$(pwd)/Verbali/Interni"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -73,8 +74,8 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "../../../Verbali/Interni"
-              mv "${filename}.pdf" "../../../Verbali/Interni/"
+              mkdir -p "$dest_dir"
+              mv "${filename}.pdf" "$dest_dir/"
             fi
             cd - > /dev/null
       
@@ -87,12 +88,13 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/Esterni/Latex/*.tex; do
+          for file in Verbali/Interni/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+            dest_dir="$(pwd)/Verbali/Esterni"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -110,8 +112,8 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "../../../Verbali/Esterni"
-              mv "${filename}.pdf" "../../../Verbali/Esterni/"
+              mkdir -p "$dest_dir"
+              mv "${filename}.pdf" "$dest_dir/"
             fi
             cd - > /dev/null
       
@@ -124,12 +126,13 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Candidatura/Latex/*.tex; do
+          for file in Verbali/Interni/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+            dest_dir="$(pwd)/Candidatura"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -147,8 +150,8 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "../../../Candidatura"
-              mv "${filename}.pdf" "../../../Candidatura/"
+              mkdir -p "$dest_dir"
+              mv "${filename}.pdf" "$dest_dir/"
             fi
             cd - > /dev/null
       
@@ -161,12 +164,13 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/RTB/Latex/*.tex; do
+          for file in Verbali/Interni/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+            dest_dir="$(pwd)/RTB"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -184,8 +188,8 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "../../../RTB"
-              mv "${filename}.pdf" "../../../RTB/"
+              mkdir -p "$dest_dir"
+              mv "${filename}.pdf" "$dest_dir/"
             fi
             cd - > /dev/null
       
@@ -198,12 +202,13 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Glossario/*.tex; do
+          for file in Verbali/Interni/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+            dest_dir="$(pwd)/Glossario"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -221,8 +226,8 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "../../../Glossario"
-              mv "${filename}.pdf" "../../../Glossario/"
+              mkdir -p "$dest_dir"
+              mv "${filename}.pdf" "$dest_dir/"
             fi
             cd - > /dev/null
       

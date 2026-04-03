@@ -208,7 +208,6 @@ jobs:
             filename=$(basename "$file" .tex)
             basedir=$(dirname "$file")
             hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
-            dest_dir="$(pwd)/Glossario"
       
             # Calcola hash attuale
             current_hash=$(md5sum "$file" | cut -d' ' -f1)
@@ -226,8 +225,9 @@ jobs:
               "$(basename "$file")" || true
       
             if [ -f "${filename}.pdf" ]; then
-              mkdir -p "$dest_dir"
-              mv "${filename}.pdf" "$dest_dir/"
+              echo "PDF generato: $basedir/${filename}.pdf"
+            else
+              echo "ATTENZIONE: PDF non generato per $filename"
             fi
             cd - > /dev/null
       

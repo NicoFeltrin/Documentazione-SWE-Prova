@@ -164,7 +164,7 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in RTB/Latex/*.tex; do
+          for file in RTB/latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)

@@ -88,7 +88,7 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/Interni/Latex/*.tex; do
+          for file in Verbali/Esterni/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
@@ -126,7 +126,7 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/Interni/Latex/*.tex; do
+          for file in Candidatura/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
@@ -164,7 +164,7 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/Interni/Latex/*.tex; do
+          for file in RTB/Latex/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)
@@ -202,7 +202,7 @@ jobs:
         run: |
           mkdir -p .tex_hashes
       
-          for file in Verbali/Interni/Latex/*.tex; do
+          for file in Glossario/*.tex; do
             [ -f "$file" ] || continue
       
             filename=$(basename "$file" .tex)

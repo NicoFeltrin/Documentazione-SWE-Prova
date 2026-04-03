@@ -22,6 +22,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/texlive-custom:latest
+          tags: ghcr.io/nicofeltrin/texlive-custom:latest
           context: .
           file: .github/Dockerfile

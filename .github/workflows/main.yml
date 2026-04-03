@@ -24,7 +24,13 @@ jobs:
         with:
           path: |
             **/.latex_aux
-          key: latexmk-${{ runner.os }}-${{ hashFiles('**/*.tex') }}
+            .tex_hashes
+            Verbali/Interni/*.pdf
+            Verbali/Esterni/*.pdf
+            Candidatura/*.pdf
+            RTB/*.pdf
+            Glossario/*.pdf
+          key: latexmk-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             latexmk-${{ runner.os }}-
 
@@ -42,118 +48,187 @@ jobs:
       - name: Compila verbali interni
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
+          mkdir -p .tex_hashes
+      
           for file in Verbali/Interni/Latex/*.tex; do
-            if [ -f "$file" ]; then
-              echo "Compilo $file..."
-              filename=$(basename "$file" .tex)
-              basedir=$(dirname "$file")
-              
-              cd "$basedir"
-              latexmk -pdf -interaction=nonstopmode -file-line-error \
-                -aux-directory=.latex_aux \
-                "$(basename $file)" || true
-              
-              if [ -f "${filename}.pdf" ]; then
-                mkdir -p "$(pwd)/../../../Verbali/Interni"
-                mv "${filename}.pdf" "$(pwd)/../../../Verbali/Interni/"
-                echo "PDF spostato in Verbali/Interni/${filename}.pdf"
-              fi
-              
-              cd - > /dev/null
+            [ -f "$file" ] || continue
+      
+            filename=$(basename "$file" .tex)
+            basedir=$(dirname "$file")
+            hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+      
+            # Calcola hash attuale
+            current_hash=$(md5sum "$file" | cut -d' ' -f1)
+            previous_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+      
+            if [ "$current_hash" = "$previous_hash" ]; then
+              echo "Skipping $file (non modificato)"
+              continue
             fi
+      
+            echo "Compilo $file..."
+            cd "$basedir"
+            latexmk -pdf -interaction=nonstopmode -file-line-error \
+              -aux-directory=.latex_aux \
+              "$(basename "$file")" || true
+      
+            if [ -f "${filename}.pdf" ]; then
+              mkdir -p "../../../Verbali/Interni"
+              mv "${filename}.pdf" "../../../Verbali/Interni/"
+            fi
+            cd - > /dev/null
+      
+            # Salva il nuovo hash solo se compilato con successo
+            echo "$current_hash" > "$hash_file"
           done
       
       - name: Compila verbali esterni
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
+          mkdir -p .tex_hashes
+      
           for file in Verbali/Esterni/Latex/*.tex; do
-            if [ -f "$file" ]; then
-              echo "Compilo $file..."
-              filename=$(basename "$file" .tex)
-              basedir=$(dirname "$file")
-              
-              cd "$basedir"
-              latexmk -pdf -interaction=nonstopmode -file-line-error \
-                -aux-directory=.latex_aux \
-                "$(basename $file)" || true
-              
-              if [ -f "${filename}.pdf" ]; then
-                mkdir -p "$(pwd)/../../../Verbali/Esterni"
-                mv "${filename}.pdf" "$(pwd)/../../../Verbali/Esterni/"
-                echo "PDF spostato in Verbali/Esterni/${filename}.pdf"
-              fi
-              
-              cd - > /dev/null
+            [ -f "$file" ] || continue
+      
+            filename=$(basename "$file" .tex)
+            basedir=$(dirname "$file")
+            hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+      
+            # Calcola hash attuale
+            current_hash=$(md5sum "$file" | cut -d' ' -f1)
+            previous_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+      
+            if [ "$current_hash" = "$previous_hash" ]; then
+              echo "Skipping $file (non modificato)"
+              continue
             fi
+      
+            echo "Compilo $file..."
+            cd "$basedir"
+            latexmk -pdf -interaction=nonstopmode -file-line-error \
+              -aux-directory=.latex_aux \
+              "$(basename "$file")" || true
+      
+            if [ -f "${filename}.pdf" ]; then
+              mkdir -p "../../../Verbali/Esterni"
+              mv "${filename}.pdf" "../../../Verbali/Esterni/"
+            fi
+            cd - > /dev/null
+      
+            # Salva il nuovo hash solo se compilato con successo
+            echo "$current_hash" > "$hash_file"
           done
       
       - name: Compila documenti candidatura
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
+          mkdir -p .tex_hashes
+      
           for file in Candidatura/Latex/*.tex; do
-            if [ -f "$file" ]; then
-              echo "Compilo $file..."
-              filename=$(basename "$file" .tex)
-              basedir=$(dirname "$file")
-              
-              cd "$basedir"
-              latexmk -pdf -interaction=nonstopmode -file-line-error \
-                -aux-directory=.latex_aux \
-                "$(basename $file)" || true
-              
-              if [ -f "${filename}.pdf" ]; then
-                mkdir -p "$(pwd)/../../Candidatura"
-                mv "${filename}.pdf" "$(pwd)/../../Candidatura/"
-                echo "PDF spostato in Candidatura/${filename}.pdf"
-              fi
-              
-              cd - > /dev/null
+            [ -f "$file" ] || continue
+      
+            filename=$(basename "$file" .tex)
+            basedir=$(dirname "$file")
+            hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+      
+            # Calcola hash attuale
+            current_hash=$(md5sum "$file" | cut -d' ' -f1)
+            previous_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+      
+            if [ "$current_hash" = "$previous_hash" ]; then
+              echo "Skipping $file (non modificato)"
+              continue
             fi
+      
+            echo "Compilo $file..."
+            cd "$basedir"
+            latexmk -pdf -interaction=nonstopmode -file-line-error \
+              -aux-directory=.latex_aux \
+              "$(basename "$file")" || true
+      
+            if [ -f "${filename}.pdf" ]; then
+              mkdir -p "../../../Candidatura"
+              mv "${filename}.pdf" "../../../Candidatura/"
+            fi
+            cd - > /dev/null
+      
+            # Salva il nuovo hash solo se compilato con successo
+            echo "$current_hash" > "$hash_file"
           done
 
       - name: Compila documenti RTB
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
-          for file in RTB/latex/*.tex; do
-            if [ -f "$file" ]; then
-              echo "Compilo $file..."
-              filename=$(basename "$file" .tex)
-              basedir=$(dirname "$file")
-              
-              cd "$basedir"
-              latexmk -pdf -interaction=nonstopmode -file-line-error \
-                -aux-directory=.latex_aux \
-                "$(basename $file)" || true
-              
-              if [ -f "${filename}.pdf" ]; then
-                mkdir -p "$(pwd)/../../RTB"
-                mv "${filename}.pdf" "$(pwd)/../../RTB/"
-                echo "PDF spostato in RTB/${filename}.pdf"
-              fi
-              
-              cd - > /dev/null
+          mkdir -p .tex_hashes
+      
+          for file in Verbali/RTB/Latex/*.tex; do
+            [ -f "$file" ] || continue
+      
+            filename=$(basename "$file" .tex)
+            basedir=$(dirname "$file")
+            hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+      
+            # Calcola hash attuale
+            current_hash=$(md5sum "$file" | cut -d' ' -f1)
+            previous_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+      
+            if [ "$current_hash" = "$previous_hash" ]; then
+              echo "Skipping $file (non modificato)"
+              continue
             fi
+      
+            echo "Compilo $file..."
+            cd "$basedir"
+            latexmk -pdf -interaction=nonstopmode -file-line-error \
+              -aux-directory=.latex_aux \
+              "$(basename "$file")" || true
+      
+            if [ -f "${filename}.pdf" ]; then
+              mkdir -p "../../../RTB"
+              mv "${filename}.pdf" "../../../RTB/"
+            fi
+            cd - > /dev/null
+      
+            # Salva il nuovo hash solo se compilato con successo
+            echo "$current_hash" > "$hash_file"
           done
 
       - name: Compila Glossario
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
-          if [ -f "Glossario/Glossario.tex" ]; then
-            echo "Compilo Glossario/Glossario.tex..."
-            cd Glossario
+          mkdir -p .tex_hashes
+      
+          for file in Glossario/*.tex; do
+            [ -f "$file" ] || continue
+      
+            filename=$(basename "$file" .tex)
+            basedir=$(dirname "$file")
+            hash_file=".tex_hashes/$(echo "$file" | tr '/' '_').hash"
+      
+            # Calcola hash attuale
+            current_hash=$(md5sum "$file" | cut -d' ' -f1)
+            previous_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+      
+            if [ "$current_hash" = "$previous_hash" ]; then
+              echo "Skipping $file (non modificato)"
+              continue
+            fi
+      
+            echo "Compilo $file..."
+            cd "$basedir"
             latexmk -pdf -interaction=nonstopmode -file-line-error \
               -aux-directory=.latex_aux \
-              "Glossario.tex" || true
-            
-            if [ -f "Glossario.pdf" ]; then
-              echo "PDF generato: Glossario/Glossario.pdf"
-            else
-              echo "Attenzione: PDF del Glossario non generato"
+              "$(basename "$file")" || true
+      
+            if [ -f "${filename}.pdf" ]; then
+              mkdir -p "../../../Glossario"
+              mv "${filename}.pdf" "../../../Glossario/"
             fi
             cd - > /dev/null
-          else
-            echo "Glossario.tex non trovato, skip"
-          fi
+      
+            # Salva il nuovo hash solo se compilato con successo
+            echo "$current_hash" > "$hash_file"
+          done
       
       - name: Verifica PDFs generati
         run: |
